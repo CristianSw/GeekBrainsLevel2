@@ -50,7 +50,7 @@ public class MainLesson2 {
 
         try {
             arrayDataCheckStringToInt(dataArray);
-        } catch (MyArrayDataException dataException) {
+        } catch (MyArrayDataException | ArrayIndexOutOfBoundsException dataException) {
             dataException.getCause();
             dataException.getMessage();
             dataException.printStackTrace();
