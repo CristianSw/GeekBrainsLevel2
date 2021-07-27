@@ -21,6 +21,8 @@ public class ArrayConverterStringToInt {
                 }
             } catch (NumberFormatException e) {
                 isFalse = false;
+                e.getCause();
+                e.getMessage();
                 throw new MyArrayDataException("Cell array[" + column + "][" + row + "] is not number." + "This is : " + array[column][row]);
             }
         }
