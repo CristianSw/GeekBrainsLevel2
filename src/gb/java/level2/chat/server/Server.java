@@ -7,22 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-    private final AuthService authService;
-    private final List<ClientHandler> loggedUser;
-    private ServerSocket serverSocket;
 
+    private ServerSocket serverSocket;
+    private final List<ClientHandler> loggedUser;
+    private final AuthService authService;
 
     public Server() {
         authService = new AuthService();
         loggedUser = new ArrayList<>();
+
         try {
             serverSocket = new ServerSocket(8888);
-
             while (true) {
                 Socket socket = serverSocket.accept();
                 new ClientHandler(this, socket);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,24 +31,29 @@ public class Server {
         return authService;
     }
 
-    public void broadcastMessage(String outboundMessage) {
-        loggedUser.forEach(clientHandler -> clientHandler.sendMessage(outboundMessage));
-    }
-
-    public void subscribe(ClientHandler user) {
+    public synchronized void subscribe(ClientHandler user) {
         loggedUser.add(user);
     }
 
-    public void unsubscribe(ClientHandler user) {
+    public synchronized void unsubscribe(ClientHandler user) {
         loggedUser.remove(user);
     }
 
-    public boolean isNotOccupied(String name) {
-        return !isOccupied(name);
+    public synchronized boolean isNotUserOccupied(String name) {
+        return !isUserOccupied(name);
     }
 
-    public boolean isOccupied(String name) {
+    public synchronized boolean isUserOccupied(String name) {
+
         return loggedUser.stream()
-                .anyMatch(user -> user.getName().equals(name));
+                .anyMatch(u -> u.getName().equals(name));
+
     }
+
+    public synchronized void broadcastMessage(String outboundMessage) {
+
+
+        loggedUser.forEach(clientHandler -> clientHandler.sendMessage(outboundMessage));
+    }
+
 }

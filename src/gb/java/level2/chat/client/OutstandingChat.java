@@ -24,8 +24,9 @@ public class OutstandingChat {
                 String inboundMessage = communicator.receiveMessage();
                 frame.getInboundMessageConsumer().accept(inboundMessage);
             }
-        })
-                .start();
+        }).start();
+
+
     }
 
 
